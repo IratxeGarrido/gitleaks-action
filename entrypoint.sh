@@ -1,6 +1,5 @@
 #!/bin/bash
 
-INPUT_CONFIG_PATH="$1"
 
 #set own rules for gitleaks
 CONFIG="--config ./gitleaks-action/rules.toml"
@@ -29,12 +28,10 @@ then
   echo "$CAPTURE_OUTPUT"
   echo "::set-output name=result::$CAPTURE_OUTPUT"
   echo "----------------------------------"
-  echo -e $DONATE_MSG
   exit 1
 else
   GITLEAKS_RESULT=$(echo -e "\e[32m✅ SUCCESS! Your code is good to go!")
   echo "$GITLEAKS_RESULT"
   echo "::set-output name=exitcode::$GITLEAKS_RESULT"
   echo "------------------------------------"
-  echo -e $DONATE_MSG
 fi
