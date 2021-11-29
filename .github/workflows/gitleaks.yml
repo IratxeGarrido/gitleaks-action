@@ -11,6 +11,4 @@ jobs:
       with:
         fetch-depth: '0'  
     - name: gitleaks-action checkout(private)
-      uses: actions/checkout@v2
-      with:
-        repository: rheien/gitleaks-action@master
+      uses: rheien/gitleaks-action@master
