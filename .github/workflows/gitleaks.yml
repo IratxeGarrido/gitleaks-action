@@ -6,9 +6,6 @@ jobs:
   gitleaks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: gitleaks-action
-      uses: zricethezav/gitleaks-action@master
     - name: Code checkout
       uses: actions/checkout@v2
       with:
@@ -16,6 +13,4 @@ jobs:
     - name: gitleaks-action checkout(private)
       uses: actions/checkout@v2
       with:
-        repository: rheien/trialGITLEAKS/gitleaks-action@master
-    - name: run gitleaks-action
-      uses: ./gitleaks-action
+        repository: rheien/gitleaks-action@master
