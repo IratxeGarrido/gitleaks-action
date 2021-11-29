@@ -15,7 +15,7 @@ jobs:
       with:
         repository: rheien/gitleaks-action
         ref: main 
-        token: ${{ secrets.NMT }} # stored in GitHub secrets
+        token: ${{ secrets.GITHUB_TOKEN}} # stored in GitHub secrets
         path: ./gitleaks-action
     - name: run gitleaks action
       uses: ./gitleaks-action
