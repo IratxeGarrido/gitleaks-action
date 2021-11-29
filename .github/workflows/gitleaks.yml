@@ -11,4 +11,11 @@ jobs:
       with:
         fetch-depth: '0'  
     - name: gitleaks-action checkout(private)
-      uses: rheien/gitleaks-action@main
+      uses: actions/checkout@v2
+      with:
+        repository: rheien/gitleaks-action
+        ref: main 
+        token: ${{ secrets.NMT }} # stored in GitHub secrets
+        path: ./gitleaks-action
+    - name: run gitleaks action
+      uses: ./gitleaks-action
