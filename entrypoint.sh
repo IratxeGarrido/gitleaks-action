@@ -1,12 +1,10 @@
 #!/bin/bash
 
-
 #set own rules for gitleaks
 CONFIG="--config ./gitleaks-action/rules.toml"
 
-echo running gitleaks "$(gitleaks --version) with the following command👇"
+echo running gitleaks "$(gitleaks --version) with the following command : 👇"
 
-#DONATE_MSG="👋 maintaining gitleaks takes a lot of work so consider sponsoring me or donating a little something\n\e[36mhttps://github.com/sponsors/zricethezav\n\e[36mhttps://www.paypal.me/zricethezav\n"
 
 if [ "$GITHUB_EVENT_NAME" = "push" ]
 then
@@ -21,17 +19,10 @@ fi
 
 if [ $? -eq 1 ]
 then
-  GITLEAKS_RESULT=$(echo -e "\e[31m🛑 STOP! Gitleaks encountered leaks")
-  echo "$GITLEAKS_RESULT"
-  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
-  echo "----------------------------------"
-  echo "$CAPTURE_OUTPUT"
-  echo "::set-output name=result::$CAPTURE_OUTPUT"
+  echo -e "\e[31m🛑 STOP! Gitleaks encountered leaks"
   echo "----------------------------------"
   exit 1
 else
-  GITLEAKS_RESULT=$(echo -e "\e[32m✅ SUCCESS! Your code is good to go!")
-  echo "$GITLEAKS_RESULT"
-  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
+  echo -e "\e[32m✅ SUCCESS! Your code is good to go!"
   echo "------------------------------------"
 fi
