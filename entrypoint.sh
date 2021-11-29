@@ -1,28 +1,39 @@
 #!/bin/bash
 
-#set own rules for gitleaks
-CONFIG="--config ./gitleaks-action/rules.toml"
+INPUT_CONFIG_PATH="$1"
+CONFIG=""
 
-echo running gitleaks "$(gitleaks --version) with the following command : 👇"
+# check if a custom config have been provided
+if [ -f "$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH" ]; then
+  CONFIG=" --config-path=$GITHUB_WORKSPACE/$INPUT_CONFIG_PATH"
+fi
 
+echo running gitleaks "$(gitleaks --version) with the following command👇"
 
 if [ "$GITHUB_EVENT_NAME" = "push" ]
 then
-  echo gitleaks --pretty --repo-path=$GITHUB_WORKSPACE --verbose --redact --commit=$GITHUB_SHA $CONFIG
-  gitleaks --pretty --repo-path=$GITHUB_WORKSPACE --verbose --redact --commit=$GITHUB_SHA $CONFIG
+  echo gitleaks --path=$GITHUB_WORKSPACE --verbose --redact $CONFIG
+  CAPTURE_OUTPUT=$(gitleaks --path=$GITHUB_WORKSPACE --verbose --redact $CONFIG)
 elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]
 then 
-  git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF...remotes/origin/$GITHUB_HEAD_REF > commit_list.txt
-  echo gitleaks --pretty --repo-path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG
-  gitleaks --pretty --repo-path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG
+  git --git-dir="$GITHUB_WORKSPACE/.git" log --left-right --cherry-pick --pretty=format:"%H" remotes/origin/$GITHUB_BASE_REF... > commit_list.txt
+  echo gitleaks --path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG
+  CAPTURE_OUTPUT=$(gitleaks --path=$GITHUB_WORKSPACE --verbose --redact --commits-file=commit_list.txt $CONFIG)
 fi
 
 if [ $? -eq 1 ]
 then
-  echo -e "\e[31m🛑 STOP! Gitleaks encountered leaks"
+  GITLEAKS_RESULT=$(echo -e "\e[31m🛑 STOP! Gitleaks encountered leaks")
+  echo "$GITLEAKS_RESULT"
+  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
+  echo "----------------------------------"
+  echo "$CAPTURE_OUTPUT"
+  echo "::set-output name=result::$CAPTURE_OUTPUT"
   echo "----------------------------------"
   exit 1
 else
-  echo -e "\e[32m✅ SUCCESS! Your code is good to go!"
+  GITLEAKS_RESULT=$(echo -e "\e[32m✅ SUCCESS! Your code is good to go!")
+  echo "$GITLEAKS_RESULT"
+  echo "::set-output name=exitcode::$GITLEAKS_RESULT"
   echo "------------------------------------"
 fi
