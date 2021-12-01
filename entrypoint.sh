@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# !/bin/bash
 
 #set own rules for gitleaks
 CONFIG="--config ./gitleaks-action/rules.toml"
